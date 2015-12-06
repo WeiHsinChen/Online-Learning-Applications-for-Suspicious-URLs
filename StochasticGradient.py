@@ -12,10 +12,10 @@ class SG:
 		(nEx, nF) = np.shape(data[0]['data'])
 
 		cumuErrorLs = []
-		cumuFPLs = []
+		cumuFNLs = []
 		cumuTotal = 0
 		cumuFalse = 0
-		cumuFalsePositive = 0
+		cumuFalseNegative = 0
 
 		w = np.matrix(np.random.rand(nF, 1))
 		for d in xrange(days):
@@ -27,7 +27,6 @@ class SG:
 				x = X[i, :].T
 				y = Y[:, i]
 
-
 				#  Calculate Error
 				probOfPositive = logistic.cdf(w.T * x)
 				if probOfPositive >= 0.5:
@@ -38,15 +37,15 @@ class SG:
 				if predict != y:
 					cumuFalse += 1
 					if y == 1:
-						cumuFalsePositive += 1
+						cumuFalseNegative += 1
 				cumuTotal += 1
 				# update w
 				w = w + gamma * x * ((y+1/2) - probOfPositive)
 
 			cumuErrorLs.append(cumuFalse/cumuTotal)
-			cumuFPLs.append(cumuFalsePositive/cumuTotal)
+			cumuFNLs.append(cumuFalseNegative/cumuTotal)
 
-		return (cumuErrorLs, cumuFPLs)
+		return (cumuErrorLs, cumuFNLs)
 
 
 
