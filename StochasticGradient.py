@@ -7,6 +7,7 @@ class SG:
 
 		import numpy as np
 		from scipy.stats import logistic
+		from scipy.sparse import csc_matrix
 
 		# nEx: # of Examples, nF: # of features
 		(nEx, nF) = np.shape(data[0]['data'])
@@ -17,22 +18,34 @@ class SG:
 		cumuFalse = 0
 		cumuFalseNegative = 0
 
-		w = np.matrix(np.random.rand(nF, 1))
+		w = csc_matrix(np.random.rand(nF, 1))
 		for d in xrange(days):
 			X, Y = data[d]['data'], data[d]['labels']
-			
+			print 'day:', d
 			# Start PA
 			(nEx, nF) = np.shape(X)
 			for i in xrange(nEx):
+				if i % 1000 == 0:
+					print 'step: ', i
 				x = X[i, :].T
-				y = Y[:, i]
+				y = Y[i, :][0]
+
 
 				#  Calculate Error
-				probOfPositive = logistic.cdf(w.T * x)
+				# print 'w.T', w.T
+				# print 'x', x
+				# print 'w.T * x', w.T * x
+
+
+				tmp = (w.T).dot(x)
+				probOfPositive = logistic.cdf(tmp[0,0])
 				if probOfPositive >= 0.5:
 					predict = 1
 				else:
 					predict = 0
+
+				# print 'predict',  predict
+				# print 'y', y
 
 				if predict != y:
 					cumuFalse += 1
@@ -40,7 +53,7 @@ class SG:
 						cumuFalseNegative += 1
 				cumuTotal += 1
 				# update w
-				w = w + gamma * x * ((y+1/2) - probOfPositive)
+				w = w + gamma * x * ((y+1)/2 - probOfPositive)
 
 			cumuErrorLs.append(cumuFalse/cumuTotal)
 			cumuFNLs.append(cumuFalseNegative/cumuTotal)
