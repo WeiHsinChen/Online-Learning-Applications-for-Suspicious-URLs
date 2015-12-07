@@ -14,19 +14,22 @@ class SG:
 
 		cumuErrorLs = []
 		cumuFNLs = []
-		cumuTotal = 0
-		cumuFalse = 0
-		cumuFalseNegative = 0
+		cumuTotal = 0.0
+		cumuFalse = 0.0
+		cumuFalseNegative = 0.0
 
-		w = csc_matrix(np.random.rand(nF, 1))
+		# w = csc_matrix(np.random.rand(nF, 1))
+		w = csc_matrix(np.zeros((nF, 1)))
 		for d in xrange(days):
 			X, Y = data[d]['data'], data[d]['labels']
 			print 'day:', d
 			# Start PA
 			(nEx, nF) = np.shape(X)
 			for i in xrange(nEx):
-				if i % 1000 == 0:
+				if i % 100 == 0:
 					print 'step: ', i
+					print 'Cumulative Error Rate', cumuFalse/(cumuTotal+1)
+					print 'Cumulative False Negative Rate', cumuFalseNegative/(cumuTotal+1)
 				x = X[i, :].T
 				y = Y[i, :][0]
 
@@ -42,7 +45,7 @@ class SG:
 				if probOfPositive >= 0.5:
 					predict = 1
 				else:
-					predict = 0
+					predict = -1
 
 				# print 'predict',  predict
 				# print 'y', y

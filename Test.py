@@ -16,6 +16,6 @@ day1Y = day1Y.T
 # print day1X[0, :]
 # print day1Y[:,1]
 # data = {0: {'data':day1X, 'labels':day1Y},1: {'data':day1X, 'labels':day1Y}, 2: {'data':day1X, 'labels':day1Y}}
-(cumuErrorLs, cumuFPLs) = sg.calculate(7, 3, data)
+(cumuErrorLs, cumuFPLs) = sg.calculate(0.01, 100, data)
 
 print (cumuErrorLs, cumuFPLs)
