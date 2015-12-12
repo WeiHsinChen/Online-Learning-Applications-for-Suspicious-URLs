@@ -1,3 +1,6 @@
 *.pyc
 Test.py
 url.mat
+*.txt
+.DS_Store
+libsvm

@@ -18,7 +18,7 @@ class SG:
 		cumuFalse = 0.0
 		cumuFalseNegative = 0.0
 
-		# w = csc_matrix(np.random.rand(nF, 1))
+		# w = csc_matrix(np.random.rand(nF, 1)*0.001)
 		w = csc_matrix(np.zeros((nF, 1)))
 		for d in xrange(days):
 			X, Y = data[d]['data'], data[d]['labels']
@@ -27,7 +27,7 @@ class SG:
 			(nEx, nF) = np.shape(X)
 			for i in xrange(nEx):
 				if i % 100 == 0:
-					print 'step: ', i
+					print 'day: ', d, ', step: ', i
 					print 'Cumulative Error Rate', cumuFalse/(cumuTotal+1)
 					print 'Cumulative False Negative Rate', cumuFalseNegative/(cumuTotal+1)
 				x = X[i, :].T
