@@ -1,21 +1,22 @@
-
-
-import numpy as np
-from StochasticGradient import SG
-from scipy.sparse import csc_matrix
+from Perceptron import Perceptron
+from StochasticGradient import StochasticGradient
+from PassiveAggressive import PassiveAggressive
+from ConfidenceWeighted import ConfidenceWeighted
 from util import load_url
-data = load_url()
-
-sg = SG()
-
-day1X = csc_matrix([[1,0,1,1,0], [0,0,1,0,0]])
-day1Y = csc_matrix([1, 0])
-day1Y = day1Y.T
+from time import time
 
 
-# print day1X[0, :]
-# print day1Y[:,1]
-# data = {0: {'data':day1X, 'labels':day1Y},1: {'data':day1X, 'labels':day1Y}, 2: {'data':day1X, 'labels':day1Y}}
-(cumuErrorLs, cumuFPLs) = sg.calculate(0.01, 100, data)
+def test_speed():
+    data = load_url()
+    x = data[0]['data'][:100]
+    y = data[0]['labels'][:100]
+    model_list = [Perceptron(), StochasticGradient(),
+                  PassiveAggressive(), ConfidenceWeighted()]
+    model_name = ['Perceptron', 'StochasticGradient',
+                  'PassiveAggressive', 'ConfidenceWeighted']
+    for idx, model in enumerate(model_list):
+        start = time()
+        model.run(x[:100], y[:100])
+        print "%s run %f sec" % (model_name[idx], time() - start)
 
-print (cumuErrorLs, cumuFPLs)
+test_speed()

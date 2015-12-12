@@ -1,70 +1,45 @@
+import numpy as np
+from scipy.stats import logistic
+from scipy.sparse import csc_matrix
+# x is k features by N instances
+# y is 1 label in {0,1} by N instances
+# w: weight vector 'w' after learning
 
 
-class SG:
-	def calculate(self, gamma, days, data): 
-		if days == 0:
-			return None
+class StochasticGradient:
+    # w = csc_matrix(np.random.rand(k, 1))
+    def __init__(self, w=None, gamma=0.01):
+        self.w = w
+        self.gamma = gamma
 
-		import numpy as np
-		from scipy.stats import logistic
-		from scipy.sparse import csc_matrix
+    def run(self, x, y):
+        # N: # of Examples, k: # of features
+        (N, k) = x.shape
+        cumu_false = 0.0
+        cumu_false_negative = 0.0
+        if self.w is None:
+            self.w = csc_matrix(np.zeros((k, 1)))
+        # Start PA
+        for i in xrange(N):
+            if i % 100 == 0:
+                print 'step: ', i
+                print 'Cumulative Error Rate', cumu_false / (i + 1)
+                print 'Cumulative False Negative Rate', cumu_false_negative / (i + 1)
+            xi = x[i, :].T
+            yi = y[i, :][0]
 
-		# nEx: # of Examples, nF: # of features
-		(nEx, nF) = np.shape(data[0]['data'])
+            tmp = (self.w.T).dot(xi)
+            prob_of_positive = logistic.cdf(tmp[0, 0])
+            if prob_of_positive >= 0.5:
+                predict = 1
+            else:
+                predict = -1
 
-		cumuErrorLs = []
-		cumuFNLs = []
-		cumuTotal = 0.0
-		cumuFalse = 0.0
-		cumuFalseNegative = 0.0
+            mistake = 1 if (predict != yi) else 0
+            false_negative = 1 if yi == 1 and mistake else 0
+            cumu_false += mistake
+            cumu_false_negative += false_negative
+            # update w
+            self.w = self.w + self.gamma * xi * ((yi + 1) / 2 - prob_of_positive)
 
-		# w = csc_matrix(np.random.rand(nF, 1))
-		w = csc_matrix(np.zeros((nF, 1)))
-		for d in xrange(days):
-			X, Y = data[d]['data'], data[d]['labels']
-			print 'day:', d
-			# Start PA
-			(nEx, nF) = np.shape(X)
-			for i in xrange(nEx):
-				if i % 100 == 0:
-					print 'step: ', i
-					print 'Cumulative Error Rate', cumuFalse/(cumuTotal+1)
-					print 'Cumulative False Negative Rate', cumuFalseNegative/(cumuTotal+1)
-				x = X[i, :].T
-				y = Y[i, :][0]
-
-
-				#  Calculate Error
-				# print 'w.T', w.T
-				# print 'x', x
-				# print 'w.T * x', w.T * x
-
-
-				tmp = (w.T).dot(x)
-				probOfPositive = logistic.cdf(tmp[0,0])
-				if probOfPositive >= 0.5:
-					predict = 1
-				else:
-					predict = -1
-
-				# print 'predict',  predict
-				# print 'y', y
-
-				if predict != y:
-					cumuFalse += 1
-					if y == 1:
-						cumuFalseNegative += 1
-				cumuTotal += 1
-				# update w
-				w = w + gamma * x * ((y+1)/2 - probOfPositive)
-
-			cumuErrorLs.append(cumuFalse/cumuTotal)
-			cumuFNLs.append(cumuFalseNegative/cumuTotal)
-
-		return (cumuErrorLs, cumuFNLs)
-
-
-
-
-
-
+        return (cumu_false, cumu_false_negative)
