@@ -3,7 +3,10 @@
 class SVM:
 	def train(self, x, y, param): 
 		"""
-		data: training examples and labels in day i ~ j
+		Training examples and labels in day i ~ j
+		:type x: List[List[int]]
+		:type y: List[int]
+		:rtype: libsvm.model
 
 		TODO: 
 			1. transverse sparse input into
@@ -21,8 +24,11 @@ class SVM:
 
 	def test(self, model, x, y):
 		"""
-		data: training examples and labels in a single day i
-		
+		Testing examples and labels in a single day i
+		:type x: List[List[int]]
+		:type y: List[int]
+		:rtype: (List[int], (float, float, float), List[float])
+
 		TODO: 
 			1. transverse sparse input into
 				x = [[example 1], [example 2], ..., [example n]]
