@@ -20,21 +20,18 @@ class StochasticGradient:
         if self.w is None:
             self.w = csc_matrix(np.zeros((k, 1)))
         # Start PA
-        for i in xrange(N):
+        for i in range(N):
             if i % 100 == 0:
-                print 'step: ', i
-                print 'Cumulative Error Rate', cumu_false / (i + 1)
-                print 'Cumulative False Negative Rate', cumu_false_negative / (i + 1)
+                print ('step: ', i)
+                print ('Cumulative Error Rate in this day', cumu_false / (i + 1))
+                print ('Cumulative False Negative Rate in this day', cumu_false_negative / (i + 1))
             xi = x[i, :].T
             yi = y[i, :][0]
 
             tmp = (self.w.T).dot(xi)
             prob_of_positive = logistic.cdf(tmp[0, 0])
-            if prob_of_positive >= 0.5:
-                predict = 1
-            else:
-                predict = -1
-
+            
+            predict = 1 if prob_of_positive >= 0.5 else -1
             mistake = 1 if (predict != yi) else 0
             false_negative = 1 if yi == 1 and mistake else 0
             cumu_false += mistake
