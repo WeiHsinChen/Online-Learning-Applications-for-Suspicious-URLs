@@ -53,7 +53,7 @@ class NeuronNetwork:
 			
 			# calculate sigma for update w1 and w2
 			sigma2 = -2 * (yi-score2[0,0]) 
-			sigma1 = sigma2 * self.w2[1:, :].multiply(csc_matrix(np.ones((self.num_neuron, 1))) - np.tan(score1).power(2)) 
+			sigma1 = sigma2 * self.w2[1:, :].multiply(csc_matrix(np.ones((self.num_neuron, 1))) - np.tan(score1).multiply(np.tan(score1))) 
 
 			# update w2
 			self.w2 = self.w2 - self.gamma * sigma2 * layer1

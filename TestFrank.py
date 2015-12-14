@@ -108,7 +108,7 @@ def testNN():
         np.savetxt('cumuErrorNN.txt', cum_ErrorLs)
         np.savetxt('cumuFnNN.txt', cum_FNLs)
 
-testNN()
+# testNN()
 
 def fixVariablePerceptron():
     # for 
@@ -140,4 +140,33 @@ def fixVariablePerceptron():
     # print ('X[:, 3231953]', X[:, 3231953].sum(axis=0))
 
 # fixVariablePerceptron()
+from PassiveAggressive import PassiveAggressive
+def testPA():
+    # for 
+    data = load_url() 
+    pa = PassiveAggressive()
+
+    cum_total = 0
+    cum_error = 0
+    cum_fn = 0
+    cum_ErrorLs = []
+    cum_FNLs = []
+    alphaLs = []
+    for d in range(120):
+        X, y = data[d]['data'], data[d]['labels']
+        [nEx, nF] = X.shape
+        (error, fn, alphas) = pa.run(X, y)
+
+        cum_total += nEx
+        cum_error += error
+        cum_fn += fn
+        cum_ErrorLs.append(cum_error/(cum_total+1))
+        cum_FNLs.append(cum_fn/(cum_total+1))
+        alphaLs.append('day '+str(d))
+        alphaLs.extend(alphas)
+        np.savetxt('cumuErrorPA.txt', cum_ErrorLs)
+        np.savetxt('cumuFNPA.txt', cum_FNLs)
+        np.savetxt('alphaLs.txt', alphaLs)
+
+testPA()
     
