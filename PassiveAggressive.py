@@ -5,7 +5,6 @@ from math import sqrt
 class PassiveAggressive():
     def __init__(self, w=None):
         self.w = w
-
     def run(self, x, y):
         N, k = x.shape
         if self.w is None:
