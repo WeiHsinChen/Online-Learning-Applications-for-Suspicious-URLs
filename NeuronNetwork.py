@@ -26,9 +26,9 @@ class NeuronNetwork:
 		cumu_false = 0.0
 		cumu_false_negative = 0.0
 		if self.w1 is None:
-			self.w1 = csc_matrix(np.random.rand(k+1, self.num_neuron))
+			self.w1 = csc_matrix(np.random.rand(k+1, self.num_neuron)*0.00001)
 		if self.w2 is None:
-			self.w2 = csc_matrix(np.random.rand(self.num_neuron+1, 1))
+			self.w2 = csc_matrix(np.random.rand(self.num_neuron+1, 1)*0.00001)
 
 		print ('start for loop')
 		# Start NN
@@ -59,10 +59,12 @@ class NeuronNetwork:
 			self.w2 = self.w2 - self.gamma * sigma2 * layer1
 
 			# update w1
+			# Method I
 			# for j in range(0, self.num_neuron):
 			# 	print ('updating num_neuron: ', j)
 			# 	self.w1[:, j] = self.w1[:, j] - self.gamma * sigma1[j, 0] * layer0
 
+			# Method II
 			for j in range(0, self.num_neuron):
 				self.w1[0, j] = self.w1[0, j] - self.gamma * sigma1[j, 0] 
 				tmp = sparse.find(xi)
